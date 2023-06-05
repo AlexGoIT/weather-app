@@ -8,7 +8,7 @@ export class Weather {
       baseURL: 'https://api.weatherapi.com/v1',
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       },
     });
 
@@ -20,7 +20,7 @@ export class Weather {
 
     this.createCurrentWeather();
     this.getForecast();
-    this.timer();
+    this.startTimer();
   }
 
   createCurrentWeather() {
@@ -96,7 +96,7 @@ export class Weather {
     this.locationCountryEl.textContent = country;
   }
 
-  timer() {
+  startTimer() {
     setInterval(() => {
       const now = new Date();
       const minutes = now.getMinutes();
@@ -110,8 +110,6 @@ export class Weather {
 
       console.log('update');
       this.getForecast();
-
-      console.log(forecast);
     }, 1000);
   }
 
