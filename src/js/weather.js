@@ -195,6 +195,6 @@ export class Weather {
   dateConverter(timestamp) {
     const now = new Date(timestamp * 1000);
 
-    return dateFormat(now, 'dd.mm.yyyy');
+    return dateFormat(now, 'dd.mm.yyyy DDDD');
   }
 }
