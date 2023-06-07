@@ -8,18 +8,15 @@ export class Weather {
       baseURL: 'https://api.weatherapi.com/v1',
       headers: {
         'Content-Type': 'application/json',
-        // 'Access-Control-Allow-Origin': '*',
       },
     });
 
     this.rootEl = document.getElementById('root');
-    // this.containerEl = document.createElement('div');
-    // this.containerEl.classList.add('container');
-
-    // this.rootEl.append(this.containerEl);
 
     this.createCurrentWeather();
     this.createForecastDay();
+
+    this.initEventListeners();
     this.getForecast();
     this.startTimer();
   }
@@ -81,33 +78,6 @@ export class Weather {
   }
 
   createForecastDay() {
-    // this.forecasteDayDateEl = document.createElement('p');
-    // this.forecasteDayDateEl.classList.add('forecast-day-date');
-
-    // this.forecasteDayTempMinEl = document.createElement('p');
-    // this.forecasteDayTempMinEl.classList.add('forecast-day-temp-min');
-
-    // this.forecasteDayTempMaxEl = document.createElement('p');
-    // this.forecasteDayTempMaxEl.classList.add('forecast-day-temp-max');
-
-    // this.forecastDayIconEl = document.createElement('img');
-    // this.forecastDayIconEl.classList.add('forecast-day-icon');
-
-    // const forecastDayTempWrapperEl = document.createElement('div');
-    // forecastDayTempWrapperEl.classList.add('forecast-day-temp-wrapper');
-    // forecastDayTempWrapperEl.append(
-    //   this.forecasteDayTempMaxEl,
-    //   this.forecasteDayTempMinEl
-    // );
-
-    // const forecastDayWrapperEl = document.createElement('div');
-    // forecastDayWrapperEl.classList.add('forecast-wrapper');
-    // forecastDayWrapperEl.append(
-    //   this.forecasteDayDateEl,
-    //   forecastDayTempWrapperEl,
-    //   this.forecastDayIconEl
-    // );
-
     this.forecastDayListEl = document.createElement('ul');
     this.forecastDayListEl.classList.add('forecast-day__list');
 
@@ -116,6 +86,13 @@ export class Weather {
     forecastDayContainerEl.append(this.forecastDayListEl);
 
     this.rootEl.insertAdjacentElement('beforeend', forecastDayContainerEl);
+  }
+
+  initEventListeners() {
+    this.forecastDayListEl.addEventListener(
+      'click',
+      this.onForecastDayClick.bind(this)
+    );
   }
 
   updateCurrentWeatherUI({ current, location }) {
@@ -140,16 +117,6 @@ export class Weather {
   }
 
   updateForecastDayUI({ forecast: { forecastday } }) {
-    // this.forecasteDayDateEl.textContent = this.dateConverter(
-    //   forecastday[0].date_epoch
-    // );
-    // this.forecasteDayTempMinEl.textContent = `${forecastday[0].day.mintemp_c}°C`;
-    // this.forecasteDayTempMaxEl.textContent = `${forecastday[0].day.maxtemp_c}°C`;
-    // this.forecastDayIconEl.src = `https://${forecastday[0].day.condition.icon}`;
-    // this.forecastDayIconEl.alt = forecastday[0].day.condition.text;
-
-    console.dir(forecastday);
-
     const forecastMurkup = forecastday
       .map(forecast => {
         return `<li class="forecast-day__item">
@@ -168,8 +135,6 @@ export class Weather {
       </li>`;
       })
       .join('');
-
-    console.log(forecastMurkup);
 
     this.forecastDayListEl.innerHTML = forecastMurkup;
   }
@@ -215,6 +180,10 @@ export class Weather {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  onForecastDayClick(e) {
+    console.log(e.target);
   }
 
   datetimeConverter(timestamp) {

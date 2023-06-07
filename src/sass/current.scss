@@ -22,16 +22,17 @@
 .current-wrapper {
   padding: 4px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-around;
   align-items: center;
   gap: 8px;
-  border-radius: 8px;
+  border-radius: 4px;
   background: #fff
     linear-gradient(
       0deg,
       rgba(255, 240, 4, 0.5) 0%,
       rgba(0, 158, 252, 0.5) 100%
     );
+  box-shadow: -5px -5px 5px -5px rgba(34, 60, 80, 0.6) inset;
 }
 
 .current-descript-wrapper {
