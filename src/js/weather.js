@@ -1,6 +1,23 @@
 import axios from 'axios';
-import dateFormat, { masks } from 'dateformat';
+import dateFormat, { i18n } from 'dateformat';
 import forecast from '../json/forecast.json';
+
+i18n.dayNames = [
+  'Нд',
+  'Пн',
+  'Вт',
+  'Ср',
+  'Чт',
+  'Пт',
+  'Сб',
+  'Неділя',
+  'Понеділок',
+  'Вівторок',
+  'Середа',
+  'Четвер',
+  "П'ятниця",
+  'Субота',
+];
 
 export class Weather {
   constructor() {
@@ -195,6 +212,6 @@ export class Weather {
   dateConverter(timestamp) {
     const now = new Date(timestamp * 1000);
 
-    return dateFormat(now, 'dd.mm.yyyy DDDD');
+    return dateFormat(now, 'dd.mm.yyyy ddd');
   }
 }
