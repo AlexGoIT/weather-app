@@ -122,7 +122,7 @@ export class Weather {
 
     // Current Weather Data ===================================================
     this.currentTimeEl.textContent = this.datetimeConverter(last_updated_epoch);
-    this.currentTempEl.textContent = `${temp_c}°C`;
+    this.currentTempEl.textContent = `${temp_c.toFixed(1)}°C`;
     this.currentIconEl.src = `http:${icon}`;
     this.currentIconEl.alt = text;
     this.currentTextEl.textContent = text;
@@ -136,17 +136,24 @@ export class Weather {
   updateForecastDayUI({ forecast: { forecastday } }) {
     const forecastMurkup = forecastday
       .map(forecast => {
+        const {
+          date_epoch,
+          day: {
+            maxtemp_c,
+            mintemp_c,
+            condition: { text, icon },
+          },
+        } = forecast;
+
         return `<li class="forecast-day__item">
-        <p class="forecast-day__date">${this.dateConverter(
-          forecast.date_epoch
-        )}</p>
+        <p class="forecast-day__date">${this.dateConverter(date_epoch)}</p>
         <div class="forecast-day__temp-wrapper">
-          <p class="forecast-day__temp-max">Max: ${forecast.day.maxtemp_c}°C</p>
-          <p class="forecast-day__temp-min">Min: ${forecast.day.mintemp_c}°C</p>
+          <p class="forecast-day__temp-max">Max: ${maxtemp_c.toFixed(1)}°C</p>
+          <p class="forecast-day__temp-min">Min: ${mintemp_c.toFixed(1)}°C</p>
         </div>
         <img
-          src="https://${forecast.day.condition.icon}"
-          alt="${forecast.day.condition.text}"
+          src="https://${icon}"
+          alt="${text}"
           class="forecast-day__icon"
         />
       </li>`;
