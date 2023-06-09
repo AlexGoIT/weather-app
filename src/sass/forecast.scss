@@ -1,5 +1,8 @@
+.forecast-day {
+  margin-top: 20px;
+}
+
 .forecast-day__list {
-  margin-top: 8px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -33,4 +36,73 @@
 .forecast-day__icon {
   width: 48px;
   height: 48px;
+}
+
+.forecast-day__date-wrapper {
+  display: flex;
+  // flex-direction: column;
+  gap: 8px;
+}
+
+.forecast-day__date {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.forecast-day__weekday {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.forecast-day__month {
+  font-size: 20px;
+}
+
+.forecast-day__temp {
+  text-align: end;
+  font-size: 20px;
+}
+
+.forecast-day__icon-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+//=========================================
+.spoiler {
+  cursor: pointer;
+  outline: 1px solid red;
+  border-radius: 8px;
+  padding: 12px;
+  height: 100%;
+}
+
+.spoiler-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.forecast-day__spoiler-btn {
+  font-size: 24px;
+  font-weight: 600;
+  color: chocolate;
+  transition: transform 0.5s ease-in-out;
+}
+
+.forecast-day__spoiler-btn.down {
+  transform: rotateZ(90deg);
+}
+
+.forecast-day__spoiler-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.7s ease-in-out;
+}
+
+.spoiler.show .forecast-day__spoiler-content {
+  max-height: 120px;
+  overflow-y: auto;
 }

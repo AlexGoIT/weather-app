@@ -1,23 +1,10 @@
 import axios from 'axios';
 import dateFormat, { i18n } from 'dateformat';
+import { dayNames, monthNames } from './lang.js';
 import forecast from '../json/forecast.json';
 
-i18n.dayNames = [
-  'Нд',
-  'Пн',
-  'Вт',
-  'Ср',
-  'Чт',
-  'Пт',
-  'Сб',
-  'Неділя',
-  'Понеділок',
-  'Вівторок',
-  'Середа',
-  'Четвер',
-  "П'ятниця",
-  'Субота',
-];
+i18n.dayNames = dayNames;
+i18n.monthNames = monthNames;
 
 export class Weather {
   constructor() {
@@ -89,6 +76,7 @@ export class Weather {
 
     const currentContainerEl = document.createElement('div');
     currentContainerEl.classList.add('container');
+    currentContainerEl.classList.add('current');
     currentContainerEl.append(this.currentWrapperEl);
 
     this.rootEl.insertAdjacentElement('beforeend', currentContainerEl);
@@ -100,6 +88,7 @@ export class Weather {
 
     const forecastDayContainerEl = document.createElement('div');
     forecastDayContainerEl.classList.add('container');
+    forecastDayContainerEl.classList.add('forecast-day');
     forecastDayContainerEl.append(this.forecastDayListEl);
 
     this.rootEl.insertAdjacentElement('beforeend', forecastDayContainerEl);
@@ -108,7 +97,7 @@ export class Weather {
   initEventListeners() {
     this.forecastDayListEl.addEventListener(
       'click',
-      this.onForecastDayClick.bind(this)
+      this.showSpoiler.bind(this)
     );
   }
 
@@ -145,22 +134,45 @@ export class Weather {
           },
         } = forecast;
 
-        return `<li class="forecast-day__item">
-        <p class="forecast-day__date">${this.dateConverter(date_epoch)}</p>
-        <div class="forecast-day__temp-wrapper">
-          <p class="forecast-day__temp-max">Max: ${maxtemp_c.toFixed(1)}°C</p>
-          <p class="forecast-day__temp-min">Min: ${mintemp_c.toFixed(1)}°C</p>
+        return `<li class="forecast-day__item spoiler">
+        <div>
+          <div class="forecast-day__date-wrapper">
+            <p class="forecast-day__date">${
+              this.dateConverter(date_epoch).date
+            }</p>
+            <p class="forecast-day__weekday">${
+              this.dateConverter(date_epoch).day
+            }</p>
+          </div>
+          <p class="forecast-day__month">${
+            this.dateConverter(date_epoch).month
+          }</p>
         </div>
-        <img
-          src="https://${icon}"
-          alt="${text}"
-          class="forecast-day__icon"
-        />
+        <div class="forecast-day__temp-wrapper">
+          <p class="forecast-day__temp">Max: ${maxtemp_c.toFixed(1)}°C</p>
+          <p class="forecast-day__temp">Min: ${mintemp_c.toFixed(1)}°C</p>
+        </div>
+        <div class="forecast-day__icon-wrapper">
+          <img
+            src="https://${icon}"
+            alt="${text}"
+            class="forecast-day__icon"
+          />
+          <p class="forecast-day__icon-text">${text}</p>
+        </div>
+        <div class="forecast-day__spoiler-content">
+          <p class="forecast-day__spoiler-text">${text}</p>
+        </div>
       </li>`;
       })
       .join('');
 
     this.forecastDayListEl.innerHTML = forecastMurkup;
+  }
+
+  showSpoiler(e) {
+    console.log(e.target);
+    this.forecastDayListEl.classList.toggle('show');
   }
 
   startTimer() {
@@ -206,10 +218,6 @@ export class Weather {
     }
   }
 
-  onForecastDayClick(e) {
-    console.log(e.target);
-  }
-
   datetimeConverter(timestamp) {
     const now = new Date(timestamp * 1000);
 
@@ -219,6 +227,12 @@ export class Weather {
   dateConverter(timestamp) {
     const now = new Date(timestamp * 1000);
 
-    return dateFormat(now, 'dd.mm.yyyy ddd');
+    // return dateFormat(now, 'dd mmm ddd');
+
+    return {
+      date: dateFormat(now, 'dd'),
+      month: dateFormat(now, 'mmm'),
+      day: dateFormat(now, 'ddd'),
+    };
   }
 }
