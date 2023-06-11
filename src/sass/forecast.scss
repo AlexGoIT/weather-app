@@ -13,6 +13,7 @@
   padding: 4px;
   display: flex;
   align-items: center;
+  flex-direction: column;
   border-radius: 4px;
   background: #fff
     linear-gradient(
@@ -29,15 +30,14 @@
   transform: scale(1.01);
 }
 
-.forecast-day__temp-wrapper {
-  margin-left: auto;
+.forecast-day__head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.forecast-day__icon {
-  width: 48px;
-  height: 48px;
-}
-
+//===============================================
 .forecast-day__date-wrapper {
   display: flex;
   // flex-direction: column;
@@ -58,12 +58,24 @@
   font-size: 20px;
 }
 
-.forecast-day__temp {
-  text-align: end;
-  font-size: 20px;
+//===============================================
+.forecast-day__temp-wrapper {
+  margin-left: auto;
 }
 
+.forecast-day__icon {
+  width: 48px;
+  height: 48px;
+}
+
+.forecast-day__temp {
+  text-align: end;
+  font-size: 18px;
+}
+
+//===============================================
 .forecast-day__icon-wrapper {
+  margin-left: 12px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -97,12 +109,10 @@
 }
 
 .forecast-day__spoiler-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.7s ease-in-out;
+  width: 100%;
+  display: none;
 }
 
-.spoiler.show .forecast-day__spoiler-content {
-  max-height: 120px;
-  overflow-y: auto;
+.forecast-day__spoiler-content.show {
+  display: block;
 }

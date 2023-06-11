@@ -123,7 +123,7 @@ export class Weather {
   }
 
   updateForecastDayUI({ forecast: { forecastday } }) {
-    const forecastMurkup = forecastday
+    const forecastMarkup = forecastday
       .map(forecast => {
         const {
           date_epoch,
@@ -135,30 +135,32 @@ export class Weather {
         } = forecast;
 
         return `<li class="forecast-day__item spoiler">
-        <div>
-          <div class="forecast-day__date-wrapper">
-            <p class="forecast-day__date">${
-              this.dateConverter(date_epoch).date
-            }</p>
-            <p class="forecast-day__weekday">${
-              this.dateConverter(date_epoch).day
+        <div class="forecast-day__head">
+          <div>
+            <div class="forecast-day__date-wrapper">
+              <p class="forecast-day__date">${
+                this.dateConverter(date_epoch).date
+              }</p>
+              <p class="forecast-day__weekday">${
+                this.dateConverter(date_epoch).day
+              }</p>
+            </div>
+            <p class="forecast-day__month">${
+              this.dateConverter(date_epoch).month
             }</p>
           </div>
-          <p class="forecast-day__month">${
-            this.dateConverter(date_epoch).month
-          }</p>
-        </div>
-        <div class="forecast-day__temp-wrapper">
-          <p class="forecast-day__temp">Max: ${maxtemp_c.toFixed(1)}°C</p>
-          <p class="forecast-day__temp">Min: ${mintemp_c.toFixed(1)}°C</p>
-        </div>
-        <div class="forecast-day__icon-wrapper">
-          <img
-            src="https://${icon}"
-            alt="${text}"
-            class="forecast-day__icon"
-          />
-          <p class="forecast-day__icon-text">${text}</p>
+          <div class="forecast-day__temp-wrapper">
+            <p class="forecast-day__temp">Max: ${maxtemp_c.toFixed(1)}°C</p>
+            <p class="forecast-day__temp">Min: ${mintemp_c.toFixed(1)}°C</p>
+          </div>
+          <div class="forecast-day__icon-wrapper">
+            <img
+              src="https://${icon}"
+              alt="${text}"
+              class="forecast-day__icon"
+            />
+            <p class="forecast-day__icon-text">${text}</p>
+          </div>
         </div>
         <div class="forecast-day__spoiler-content">
           <p class="forecast-day__spoiler-text">${text}</p>
@@ -167,12 +169,15 @@ export class Weather {
       })
       .join('');
 
-    this.forecastDayListEl.innerHTML = forecastMurkup;
+    this.forecastDayListEl.innerHTML = forecastMarkup;
   }
 
   showSpoiler(e) {
-    console.log(e.target);
-    this.forecastDayListEl.classList.toggle('show');
+    console.log(e.target.closest('.spoiler'));
+    const spoiler = e.target.closest('.spoiler');
+    spoiler
+      .querySelector('.forecast-day__spoiler-content')
+      .classList.toggle('show');
   }
 
   startTimer() {
@@ -181,7 +186,7 @@ export class Weather {
       const minutes = now.getMinutes();
       const seconds = now.getSeconds();
 
-      console.log(`${minutes}:${seconds}`, minutes % 15);
+      // console.log(`${minutes}:${seconds}`, minutes % 15);
 
       if (minutes % 15 !== 5 || seconds > 0) {
         return;
