@@ -1,6 +1,10 @@
 import axios from 'axios';
-import dateFormat, { masks } from 'dateformat';
+import dateFormat, { i18n } from 'dateformat';
+import { dayNames, monthNames } from './lang.js';
 import forecast from '../json/forecast.json';
+
+i18n.dayNames = dayNames;
+i18n.monthNames = monthNames;
 
 export class Weather {
   constructor() {
@@ -72,6 +76,7 @@ export class Weather {
 
     const currentContainerEl = document.createElement('div');
     currentContainerEl.classList.add('container');
+    currentContainerEl.classList.add('current');
     currentContainerEl.append(this.currentWrapperEl);
 
     this.rootEl.insertAdjacentElement('beforeend', currentContainerEl);
@@ -83,6 +88,7 @@ export class Weather {
 
     const forecastDayContainerEl = document.createElement('div');
     forecastDayContainerEl.classList.add('container');
+    forecastDayContainerEl.classList.add('forecast-day');
     forecastDayContainerEl.append(this.forecastDayListEl);
 
     this.rootEl.insertAdjacentElement('beforeend', forecastDayContainerEl);
@@ -91,7 +97,7 @@ export class Weather {
   initEventListeners() {
     this.forecastDayListEl.addEventListener(
       'click',
-      this.onForecastDayClick.bind(this)
+      this.showSpoiler.bind(this)
     );
   }
 
@@ -105,7 +111,7 @@ export class Weather {
 
     // Current Weather Data ===================================================
     this.currentTimeEl.textContent = this.datetimeConverter(last_updated_epoch);
-    this.currentTempEl.textContent = `${temp_c}°C`;
+    this.currentTempEl.textContent = `${temp_c.toFixed(1)}°C`;
     this.currentIconEl.src = `http:${icon}`;
     this.currentIconEl.alt = text;
     this.currentTextEl.textContent = text;
@@ -117,26 +123,61 @@ export class Weather {
   }
 
   updateForecastDayUI({ forecast: { forecastday } }) {
-    const forecastMurkup = forecastday
+    const forecastMarkup = forecastday
       .map(forecast => {
-        return `<li class="forecast-day__item">
-        <p class="forecast-day__date">${this.dateConverter(
-          forecast.date_epoch
-        )}</p>
-        <div class="forecast-day__temp-wrapper">
-          <p class="forecast-day__temp-max">Max: ${forecast.day.maxtemp_c}°C</p>
-          <p class="forecast-day__temp-min">Min: ${forecast.day.mintemp_c}°C</p>
+        const {
+          date_epoch,
+          day: {
+            maxtemp_c,
+            mintemp_c,
+            condition: { text, icon },
+          },
+        } = forecast;
+
+        return `<li class="forecast-day__item spoiler">
+        <div class="forecast-day__head">
+          <div>
+            <div class="forecast-day__date-wrapper">
+              <p class="forecast-day__date">${
+                this.dateConverter(date_epoch).date
+              }</p>
+              <p class="forecast-day__weekday">${
+                this.dateConverter(date_epoch).day
+              }</p>
+            </div>
+            <p class="forecast-day__month">${
+              this.dateConverter(date_epoch).month
+            }</p>
+          </div>
+          <div class="forecast-day__temp-wrapper">
+            <p class="forecast-day__temp">Max: ${maxtemp_c.toFixed(1)}°C</p>
+            <p class="forecast-day__temp">Min: ${mintemp_c.toFixed(1)}°C</p>
+          </div>
+          <div class="forecast-day__icon-wrapper">
+            <img
+              src="https://${icon}"
+              alt="${text}"
+              class="forecast-day__icon"
+            />
+            <p class="forecast-day__icon-text">${text}</p>
+          </div>
         </div>
-        <img
-          src="https://${forecast.day.condition.icon}"
-          alt="${forecast.day.condition.text}"
-          class="forecast-day__icon"
-        />
+        <div class="forecast-day__spoiler-content">
+          <p class="forecast-day__spoiler-text">${text}</p>
+        </div>
       </li>`;
       })
       .join('');
 
-    this.forecastDayListEl.innerHTML = forecastMurkup;
+    this.forecastDayListEl.innerHTML = forecastMarkup;
+  }
+
+  showSpoiler(e) {
+    console.log(e.target.closest('.spoiler'));
+    const spoiler = e.target.closest('.spoiler');
+    spoiler
+      .querySelector('.forecast-day__spoiler-content')
+      .classList.toggle('show');
   }
 
   startTimer() {
@@ -145,7 +186,7 @@ export class Weather {
       const minutes = now.getMinutes();
       const seconds = now.getSeconds();
 
-      console.log(`${minutes}:${seconds}`, minutes % 15);
+      // console.log(`${minutes}:${seconds}`, minutes % 15);
 
       if (minutes % 15 !== 5 || seconds > 0) {
         return;
@@ -182,10 +223,6 @@ export class Weather {
     }
   }
 
-  onForecastDayClick(e) {
-    console.log(e.target);
-  }
-
   datetimeConverter(timestamp) {
     const now = new Date(timestamp * 1000);
 
@@ -195,6 +232,12 @@ export class Weather {
   dateConverter(timestamp) {
     const now = new Date(timestamp * 1000);
 
-    return dateFormat(now, 'dd.mm.yyyy DDDD');
+    // return dateFormat(now, 'dd mmm ddd');
+
+    return {
+      date: dateFormat(now, 'dd'),
+      month: dateFormat(now, 'mmm'),
+      day: dateFormat(now, 'ddd'),
+    };
   }
 }
