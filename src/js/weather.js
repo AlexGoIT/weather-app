@@ -27,6 +27,23 @@ export class Weather {
   }
 
   createCurrentWeather() {
+    const markup = `<div class="container current">
+      <div class="current-wrapper">
+        <div class="location-wrapper">
+          <p class="location-name"></p>
+          <p class="location-region"></p>
+          <p class="location-country"></p>
+        </div>
+        <div class="current-descript-wrapper">
+          <div class="current-temp-wrapper">
+            <p class="current-temp"></p>
+            <img class="current-icon" src="" alt="">
+          </div><p class="current-text"></p>
+          <p class="current-time"></p>
+        </div>
+      </div>
+    </div>`;
+
     this.locationNameEl = document.createElement('p');
     this.locationNameEl.classList.add('location-name');
 
