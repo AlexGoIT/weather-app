@@ -8,6 +8,7 @@ i18n.monthNames = monthNames;
 
 export class Weather {
   constructor() {
+    this.city = 'Kryvyy Rih';
     this.axiosInstance = axios.create({
       baseURL: 'https://api.weatherapi.com/v1',
       headers: {
@@ -198,7 +199,7 @@ export class Weather {
   }
 
   async getForecast() {
-    const forecast = await this.fetchCurrentWeather('Kryvyy Rih');
+    const forecast = await this.fetchCurrentWeather(this.city);
 
     this.updateCurrentWeatherUI(forecast.data);
     this.updateForecastDayUI(forecast.data);
@@ -211,7 +212,7 @@ export class Weather {
     const params = {
       key: '8ddc4d4caf994c91928163714230406',
       q: city,
-      days: '3',
+      days: 5,
       aqi: 'no',
       lang: 'uk',
     };

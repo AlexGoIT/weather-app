@@ -75,6 +75,7 @@
 
 //===============================================
 .forecast-day__icon-wrapper {
+  width: 70px;
   margin-left: 12px;
   display: flex;
   flex-direction: column;
@@ -82,10 +83,14 @@
   justify-content: center;
 }
 
+.forecast-day__icon-text {
+  text-align: end;
+}
+
 //=========================================
 .spoiler {
   cursor: pointer;
-  outline: 1px solid red;
+  // outline: 1px solid red;
   border-radius: 8px;
   padding: 12px;
   height: 100%;
