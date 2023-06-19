@@ -1,7 +1,5 @@
-// import axios from 'axios';
 import dateFormat, { i18n } from 'dateformat';
 import { dayNames, monthNames } from './lang.js';
-// import forecast from '../json/forecast.json';
 
 import weatherAPI from './weather-api.js';
 
@@ -13,12 +11,6 @@ export class Weather {
 
   constructor() {
     this.city = 'Kryvyy Rih';
-    // this.axiosInstance = axios.create({
-    //   baseURL: 'https://api.weatherapi.com/v1',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // });
 
     this.rootEl = document.getElementById('root');
 
@@ -30,78 +22,20 @@ export class Weather {
     this.startTimer();
   }
 
+  initEventListeners() {
+    this.forecastDayListEl.addEventListener(
+      'click',
+      this.showSpoiler.bind(this)
+    );
+  }
+
   createCurrentWeather() {
-    const markup = `<div class="container current">
-      <div class="current-wrapper">
-        <div class="location-wrapper">
-          <p class="location-name"></p>
-          <p class="location-region"></p>
-          <p class="location-country"></p>
-        </div>
-        <div class="current-descript-wrapper">
-          <div class="current-temp-wrapper">
-            <p class="current-temp"></p>
-            <img class="current-icon" src="" alt="">
-          </div><p class="current-text"></p>
-          <p class="current-time"></p>
-        </div>
-      </div>
-    </div>`;
+    this.currentContainerEl = document.createElement('div');
+    this.currentContainerEl.classList.add('container');
+    this.currentContainerEl.classList.add('current');
+    this.currentContainerEl.append(this.currentWrapperEl);
 
-    this.locationNameEl = document.createElement('p');
-    this.locationNameEl.classList.add('location-name');
-
-    this.locationRegionEl = document.createElement('p');
-    this.locationRegionEl.classList.add('location-region');
-
-    this.locationCountryEl = document.createElement('p');
-    this.locationCountryEl.classList.add('location-country');
-
-    this.locationWrapperEl = document.createElement('div');
-    this.locationWrapperEl.classList.add('location-wrapper');
-    this.locationWrapperEl.append(
-      this.locationNameEl,
-      this.locationRegionEl,
-      this.locationCountryEl
-    );
-
-    this.currentTextEl = document.createElement('p');
-    this.currentTextEl.classList.add('current-text');
-
-    this.currentTimeEl = document.createElement('p');
-    this.currentTimeEl.classList.add('current-time');
-
-    this.currentTempEl = document.createElement('p');
-    this.currentTempEl.classList.add('current-temp');
-
-    this.currentIconEl = document.createElement('img');
-    this.currentIconEl.classList.add('current-icon');
-
-    this.currentTempWrapperEl = document.createElement('div');
-    this.currentTempWrapperEl.classList.add('current-temp-wrapper');
-    this.currentTempWrapperEl.append(this.currentTempEl, this.currentIconEl);
-
-    this.currentDescriptWrapperEl = document.createElement('div');
-    this.currentDescriptWrapperEl.classList.add('current-descript-wrapper');
-    this.currentDescriptWrapperEl.append(
-      this.currentTempWrapperEl,
-      this.currentTextEl,
-      this.currentTimeEl
-    );
-
-    this.currentWrapperEl = document.createElement('div');
-    this.currentWrapperEl.classList.add('current-wrapper');
-    this.currentWrapperEl.append(
-      this.locationWrapperEl,
-      this.currentDescriptWrapperEl
-    );
-
-    const currentContainerEl = document.createElement('div');
-    currentContainerEl.classList.add('container');
-    currentContainerEl.classList.add('current');
-    currentContainerEl.append(this.currentWrapperEl);
-
-    this.rootEl.insertAdjacentElement('beforebegin', currentContainerEl);
+    this.rootEl.insertAdjacentElement('beforebegin', this.currentContainerEl);
   }
 
   createForecastDay() {
@@ -116,13 +50,6 @@ export class Weather {
     this.rootEl.insertAdjacentElement('beforebegin', forecastDayContainerEl);
   }
 
-  initEventListeners() {
-    this.forecastDayListEl.addEventListener(
-      'click',
-      this.showSpoiler.bind(this)
-    );
-  }
-
   updateCurrentWeatherUI({ current, location }) {
     const {
       condition: { text, icon },
@@ -131,17 +58,26 @@ export class Weather {
     } = current;
     const { name, region, country } = location;
 
-    // Current Weather Data ===================================================
-    this.currentTimeEl.textContent = this.datetimeConverter(last_updated_epoch);
-    this.currentTempEl.textContent = `${temp_c.toFixed(1)}°C`;
-    this.currentIconEl.src = `http:${icon}`;
-    this.currentIconEl.alt = text;
-    this.currentTextEl.textContent = text;
+    const markup = `
+      <div class="current-wrapper">
+        <div class="location-wrapper">
+          <p class="location-name">${name}</p>
+          <p class="location-region">${region}</p>
+          <p class="location-country">${country}</p>
+        </div>
+        <div class="current-descript-wrapper">
+          <div class="current-temp-wrapper">
+            <p class="current-temp">${temp_c}</p>
+            <img class="current-icon" src="${icon}" alt="${text}">
+          </div><p class="current-text">${text}</p>
+          <p class="current-time">${this.datetimeConverter(
+            last_updated_epoch
+          )}</p>
+        </div>
+      </div>
+    `;
 
-    // Location Data ==========================================================
-    this.locationNameEl.textContent = name;
-    this.locationRegionEl.textContent = region;
-    this.locationCountryEl.textContent = country;
+    this.currentContainerEl.innerHTML = markup;
   }
 
   updateForecastDayUI({ forecast: { forecastday } }) {
@@ -234,8 +170,6 @@ export class Weather {
 
   dateConverter(timestamp) {
     const now = new Date(timestamp * 1000);
-
-    // return dateFormat(now, 'dd mmm ddd');
 
     return {
       date: dateFormat(now, 'dd'),
