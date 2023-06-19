@@ -1,20 +1,24 @@
-import axios from 'axios';
+// import axios from 'axios';
 import dateFormat, { i18n } from 'dateformat';
 import { dayNames, monthNames } from './lang.js';
-import forecast from '../json/forecast.json';
+// import forecast from '../json/forecast.json';
+
+import weatherAPI from './weather-api.js';
 
 i18n.dayNames = dayNames;
 i18n.monthNames = monthNames;
 
 export class Weather {
+  #api = new weatherAPI();
+
   constructor() {
     this.city = 'Kryvyy Rih';
-    this.axiosInstance = axios.create({
-      baseURL: 'https://api.weatherapi.com/v1',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    // this.axiosInstance = axios.create({
+    //   baseURL: 'https://api.weatherapi.com/v1',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    // });
 
     this.rootEl = document.getElementById('root');
 
@@ -216,29 +220,10 @@ export class Weather {
   }
 
   async getForecast() {
-    const forecast = await this.fetchCurrentWeather(this.city);
+    const forecast = await this.#api.fetchCurrentWeather(this.city);
 
     this.updateCurrentWeatherUI(forecast.data);
     this.updateForecastDayUI(forecast.data);
-
-    // this.updateCurrentWeatherUI(forecast);
-    // this.updateForecastDayUI(forecast);
-  }
-
-  async fetchCurrentWeather(city) {
-    const params = {
-      key: '8ddc4d4caf994c91928163714230406',
-      q: city,
-      days: 5,
-      aqi: 'no',
-      lang: 'uk',
-    };
-
-    try {
-      return await this.axiosInstance.get('/forecast.json', { params });
-    } catch (err) {
-      console.log(err);
-    }
   }
 
   datetimeConverter(timestamp) {
