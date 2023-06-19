@@ -9,13 +9,13 @@ i18n.monthNames = monthNames;
 export class Weather {
   #api = new weatherAPI();
 
-  constructor() {
+  constructor(selector) {
     this.city = 'Kryvyy Rih';
 
-    this.rootEl = document.getElementById('root');
+    this.rootEl = document.querySelector(selector);
 
-    this.createCurrentWeather();
     this.createForecastDay();
+    this.createCurrentWeather();
 
     this.initEventListeners();
     this.getForecast();
@@ -35,7 +35,7 @@ export class Weather {
     this.currentContainerEl.classList.add('current');
     this.currentContainerEl.append(this.currentWrapperEl);
 
-    this.rootEl.insertAdjacentElement('beforebegin', this.currentContainerEl);
+    this.rootEl.insertAdjacentElement('afterbegin', this.currentContainerEl);
   }
 
   createForecastDay() {
@@ -47,7 +47,7 @@ export class Weather {
     forecastDayContainerEl.classList.add('forecast-day__wrapper');
     forecastDayContainerEl.append(this.forecastDayListEl);
 
-    this.rootEl.insertAdjacentElement('beforebegin', forecastDayContainerEl);
+    this.rootEl.insertAdjacentElement('afterbegin', forecastDayContainerEl);
   }
 
   updateCurrentWeatherUI({ current, location }) {
