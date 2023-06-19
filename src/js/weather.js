@@ -101,7 +101,7 @@ export class Weather {
     currentContainerEl.classList.add('current');
     currentContainerEl.append(this.currentWrapperEl);
 
-    this.rootEl.insertAdjacentElement('beforeend', currentContainerEl);
+    this.rootEl.insertAdjacentElement('beforebegin', currentContainerEl);
   }
 
   createForecastDay() {
@@ -110,10 +110,10 @@ export class Weather {
 
     const forecastDayContainerEl = document.createElement('div');
     forecastDayContainerEl.classList.add('container');
-    forecastDayContainerEl.classList.add('forecast-day');
+    forecastDayContainerEl.classList.add('forecast-day__wrapper');
     forecastDayContainerEl.append(this.forecastDayListEl);
 
-    this.rootEl.insertAdjacentElement('beforeend', forecastDayContainerEl);
+    this.rootEl.insertAdjacentElement('beforebegin', forecastDayContainerEl);
   }
 
   initEventListeners() {
